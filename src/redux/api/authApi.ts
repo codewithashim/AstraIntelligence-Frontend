@@ -17,7 +17,13 @@ export const login = createAsyncThunk(
 
 export const register = createAsyncThunk(
   REGISTER_API(),
-  async (userData: any, { rejectWithValue }) => {
+  async (userData: {
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+    role: string;
+  }, { rejectWithValue }) => {
     try {
       const response = await post(REGISTER_API(), userData);
       return response;
