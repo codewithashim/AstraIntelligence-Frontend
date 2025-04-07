@@ -1,13 +1,13 @@
 
 import { Revenue, Expense, FinancialSummary } from "@/types";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
-import { ArrowUpIcon, ArrowDownIcon, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
+import { DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PieChart, Pie, ResponsiveContainer, Cell, Tooltip as RechartsTooltip } from "recharts";
 
@@ -17,9 +17,9 @@ interface FinancialWidgetProps {
   summary: FinancialSummary;
 }
 
-const FinancialWidget: React.FC<FinancialWidgetProps> = ({ revenues, expenses, summary }) => {
+const FinancialWidget: React.FC<FinancialWidgetProps> = ({ expenses, summary }) => {
   const { grossRevenue, totalExpenses, netRevenue, profitMargin } = summary;
-  
+
   const pieData = [
     { name: 'Revenue', value: grossRevenue, color: '#9b87f5' },
     { name: 'Expenses', value: totalExpenses, color: '#FFDEE2' },
@@ -79,7 +79,7 @@ const FinancialWidget: React.FC<FinancialWidgetProps> = ({ revenues, expenses, s
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <RechartsTooltip 
+                <RechartsTooltip
                   formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
                 />
               </PieChart>

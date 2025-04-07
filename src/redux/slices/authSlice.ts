@@ -37,7 +37,6 @@ const authSlice = createSlice({
       state.isAuthenticated = action.payload.isAuthenticated;
       state.user = action.payload.user;
       state.token = action.payload.token;
-
       storageUtils.set(AUTH_STORAGE_KEY, action.payload);
     },
 
@@ -45,53 +44,11 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
-
       storageUtils.remove(AUTH_STORAGE_KEY);
     },
   },
-
-
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(login.fulfilled, (state, action) => {
-  //       state.isAuthenticated = true;
-  //       state.user = (action.payload as any).data.user;
-  //       state.token = (action.payload as any).data.authorization.token;
-
-  //       storageUtils.set(AUTH_STORAGE_KEY, {
-  //         isAuthenticated: true,
-  //         user: (action.payload as any).data.user,
-  //         token: (action.payload as any).data.authorization.token,
-  //       });
-  //     })
-  //     .addCase(login.rejected, (state) => {
-  //       state.isAuthenticated = false;
-  //       state.user = null;
-  //       state.token = null;
-
-  //       storageUtils.remove(AUTH_STORAGE_KEY);
-  //     })
-  //     .addCase(register.fulfilled, (state, action) => {
-  //       state.isAuthenticated = true;
-  //       state.user = (action.payload as any).data.user;
-  //       state.token = (action.payload as any).data.authorization.token;
-
-  //       storageUtils.set(AUTH_STORAGE_KEY, {
-  //         isAuthenticated: true,
-  //         user: (action.payload as any).data.user,
-  //         token: (action.payload as any).data.authorization.token,
-  //       });
-  //     })
-  //     .addCase(register.rejected, (state) => {
-  //       state.isAuthenticated = false;
-  //       state.user = null;
-  //       state.token = null;
-
-  //       storageUtils.remove(AUTH_STORAGE_KEY);
-  //     });
-  // },
 });
-
+ 
 // Export the action creators
 export const { setAuthState, clearAuthState } = authSlice.actions;
 

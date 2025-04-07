@@ -34,6 +34,7 @@ export const useAuth = () => {
     initAuth,
     logout,
     loginUser,
+    user: loginUser,
     userRole,
     authToken,
     isLogin,
