@@ -47,6 +47,33 @@ const authSlice = createSlice({
       storageUtils.remove(AUTH_STORAGE_KEY);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(login.fulfilled, (state, action) => {
+        interface LoginResponse {
+          data: {
+            user: IUser;
+            accessToken: string;
+          }
+        }
+        const payload = action.payload as LoginResponse;
+        
+        state.isAuthenticated = true;
+        state.user = payload.data.user;
+        state.token = payload.data.accessToken;
+        storageUtils.set(AUTH_STORAGE_KEY, {
+          isAuthenticated: true,
+          user: payload.data.user,
+          token: payload.data.accessToken,
+        });
+      })
+      .addCase(login.rejected, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+        state.token = null;
+        storageUtils.remove(AUTH_STORAGE_KEY);
+      });
+  },
 });
  
 // Export the action creators
