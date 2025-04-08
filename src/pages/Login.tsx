@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { login as loginUser } from "@/redux/api/authApi";
 import { setAuthState } from "@/redux/slices/authSlice";
+import { LoginResponse } from "@/types/commonType";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Login = () => {
     }
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: { email: string; password: string }) => {
     try {
       const resultAction = await dispatch(
         loginUser({
@@ -37,13 +38,12 @@ const Login = () => {
           password: data.password,
         })
       );
-
+  
       if (loginUser.fulfilled.match(resultAction)) {
-        const { payload } = resultAction;
+        const payload = resultAction.payload as LoginResponse;
         
         if (payload.success && payload.data) {
           const { accessToken, user } = payload.data;
-          
           // Store auth state in Redux and local storage
           const authState = {
             isAuthenticated: true,
@@ -58,7 +58,7 @@ const Login = () => {
           };
           
           dispatch(setAuthState(authState));
-
+  
           toast({
             title: "Login successful",
             description: `Welcome back, ${user.name}!`,
@@ -69,12 +69,13 @@ const Login = () => {
           throw new Error(payload.message || "Login failed");
         }
       } else if (loginUser.rejected.match(resultAction)) {
-        throw new Error(resultAction.error.message || "Login failed");
+        const error = resultAction.payload as Error;
+        throw new Error(error.message || "Login failed");
       }
     } catch (error) {
       toast({
         title: "Login failed",
-        description: error.message || "An unexpected error occurred. Please try again.",
+        description: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }

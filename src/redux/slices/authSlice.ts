@@ -4,7 +4,7 @@ import { storageUtils } from "@/utils/storage-util";
 
 // Define the shape of the user object
 export interface IUser {
-  id: string | number | null | undefined;
+  id?: string | number | null | undefined;
   name: string;  
   email: string;
   phone?: string;  

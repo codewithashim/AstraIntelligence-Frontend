@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";  
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
@@ -40,14 +39,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { toast } = useToast();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
+  const location = useLocation(); 
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: Package, label: "Inventory", path: "/inventory" },
     { icon: Users, label: "Employees", path: "/employees" },
     { icon: DollarSign, label: "Finances", path: "/finances" },
     { icon: TrendingUp, label: "Analytics", path: "/analytics" },
-    { icon: UserRound, label: "Customers", path: "/customers" },
+    { icon: UserRound, label: "CRM System", path: "/customers" },
   ];
 
   const toggleSidebar = () => {
@@ -94,34 +93,38 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         <div className="flex flex-col flex-grow px-3 py-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <TooltipProvider key={item.path} delayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link to={item.path}>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        "w-full justify-start py-2",
-                        !isSidebarOpen && "justify-center p-2"
-                      )}
-                    >
-                      <item.icon
-                        size={20}
-                        className={isSidebarOpen ? "mr-3" : ""}
-                      />
-                      {isSidebarOpen && <span>{item.label}</span>}
-                    </Button>
-                  </Link>
-                </TooltipTrigger>
-                {!isSidebarOpen && (
-                  <TooltipContent side="right">
-                    {item.label}
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </TooltipProvider>
-          ))}
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path; // Check if current path matches
+            return (
+              <TooltipProvider key={item.path} delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link to={item.path}>
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"} // Highlight active item
+                        className={cn(
+                          "w-full justify-start py-2",
+                          !isSidebarOpen && "justify-center p-2",
+                          isActive && "bg-accent text-accent-foreground" // Optional: additional styling
+                        )}
+                      >
+                        <item.icon
+                          size={20}
+                          className={isSidebarOpen ? "mr-3" : ""}
+                        />
+                        {isSidebarOpen && <span>{item.label}</span>}
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  {!isSidebarOpen && (
+                    <TooltipContent side="right">
+                      {item.label}
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            );
+          })}
         </div>
       </aside>
 
