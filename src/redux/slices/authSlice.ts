@@ -1,14 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { login, register } from "../api/authApi";
 import { storageUtils } from "@/utils/storage-util";
 
 // Define the shape of the user object
 export interface IUser {
   id: string | number | null | undefined;
-  first_name: string;
-  last_name: string;
+  name: string;  
   email: string;
+  phone?: string;  
   role?: string;
 }
 
@@ -38,7 +37,6 @@ const authSlice = createSlice({
       state.isAuthenticated = action.payload.isAuthenticated;
       state.user = action.payload.user;
       state.token = action.payload.token;
-
       storageUtils.set(AUTH_STORAGE_KEY, action.payload);
     },
 
@@ -46,51 +44,38 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
-
       storageUtils.remove(AUTH_STORAGE_KEY);
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
+        interface LoginResponse {
+          data: {
+            user: IUser;
+            accessToken: string;
+          }
+        }
+        const payload = action.payload as LoginResponse;
+        
         state.isAuthenticated = true;
-        state.user = (action.payload as any).data.user;
-        state.token = (action.payload as any).data.authorization.token;
-
+        state.user = payload.data.user;
+        state.token = payload.data.accessToken;
         storageUtils.set(AUTH_STORAGE_KEY, {
           isAuthenticated: true,
-          user: (action.payload as any).data.user,
-          token: (action.payload as any).data.authorization.token,
+          user: payload.data.user,
+          token: payload.data.accessToken,
         });
       })
       .addCase(login.rejected, (state) => {
         state.isAuthenticated = false;
         state.user = null;
         state.token = null;
-
-        storageUtils.remove(AUTH_STORAGE_KEY);
-      })
-      .addCase(register.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
-        state.user = (action.payload as any).data.user;
-        state.token = (action.payload as any).data.authorization.token;
-
-        storageUtils.set(AUTH_STORAGE_KEY, {
-          isAuthenticated: true,
-          user: (action.payload as any).data.user,
-          token: (action.payload as any).data.authorization.token,
-        });
-      })
-      .addCase(register.rejected, (state) => {
-        state.isAuthenticated = false;
-        state.user = null;
-        state.token = null;
-
         storageUtils.remove(AUTH_STORAGE_KEY);
       });
   },
 });
-
+ 
 // Export the action creators
 export const { setAuthState, clearAuthState } = authSlice.actions;
 

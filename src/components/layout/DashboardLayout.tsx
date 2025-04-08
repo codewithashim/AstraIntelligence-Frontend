@@ -2,16 +2,16 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  LayoutDashboard, 
-  Package, 
-  Users, 
-  DollarSign, 
-  TrendingUp, 
-  UserRound, 
-  Menu, 
-  X, 
-  Bell, 
+import {
+  LayoutDashboard,
+  Package,
+  Users,
+  DollarSign,
+  TrendingUp,
+  UserRound,
+  Menu,
+  X,
+  Bell,
   Mail,
   Search,
   LogOut
@@ -21,7 +21,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +29,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -41,6 +41,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  console.log("🚀 ~ user =========>:", user)
+
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: Package, label: "Inventory", path: "/inventory" },
@@ -49,7 +51,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { icon: TrendingUp, label: "Analytics", path: "/analytics" },
     { icon: UserRound, label: "Customers", path: "/customers" },
   ];
-  
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -73,7 +75,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
-      <aside 
+      <aside
         className={cn(
           "bg-sidebar fixed inset-y-0 left-0 z-20 flex flex-col border-r transition-all duration-300",
           isSidebarOpen ? "w-64" : "w-16"
@@ -83,16 +85,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {isSidebarOpen ? (
             <h1 className="text-xl font-semibold text-sidebar-foreground">Astra Nails</h1>
           ) : null}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="ml-auto" 
+          <Button
+            variant="ghost"
+            size="icon"
+            className="ml-auto"
             onClick={toggleSidebar}
           >
             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
         </div>
-        
+
         <div className="flex flex-col flex-grow px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <TooltipProvider key={item.path} delayDuration={100}>
@@ -106,9 +108,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         !isSidebarOpen && "justify-center p-2"
                       )}
                     >
-                      <item.icon 
-                        size={20} 
-                        className={isSidebarOpen ? "mr-3" : ""} 
+                      <item.icon
+                        size={20}
+                        className={isSidebarOpen ? "mr-3" : ""}
                       />
                       {isSidebarOpen && <span>{item.label}</span>}
                     </Button>
@@ -126,7 +128,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       </aside>
 
       {/* Main content */}
-      <div 
+      <div
         className={cn(
           "flex-grow flex flex-col transition-all duration-300",
           isSidebarOpen ? "ml-64" : "ml-16"
@@ -136,16 +138,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <header className="h-16 px-6 border-b flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 sticky top-0">
           <div className="flex items-center w-full max-w-md">
             <Search size={18} className="text-muted-foreground absolute ml-3" />
-            <Input 
-              className="pl-10 bg-muted/40" 
-              placeholder="Search..." 
+            <Input
+              className="pl-10 bg-muted/40"
+              placeholder="Search..."
             />
           </div>
-          
+
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleNotificationClick}
             >
               <Bell size={20} />
@@ -153,7 +155,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <Button variant="ghost" size="icon">
               <Mail size={20} />
             </Button>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer">
