@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { 
@@ -17,7 +18,6 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import ActionButton from "@/components/dashboard/ActionButtons";
 import { 
   TrendingUp, 
   Calendar, 
@@ -75,7 +75,10 @@ const Analytics = () => {
               <Calendar size={18} className="mr-2" />
               Date Range
             </Button>
-            <ActionButton actionType="Export Insights" />
+            <Button variant="outline">
+              <FileBarChart size={18} className="mr-2" />
+              Export Insights
+            </Button>
           </div>
         </div>
 

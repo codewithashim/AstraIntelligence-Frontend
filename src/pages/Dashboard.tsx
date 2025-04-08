@@ -7,6 +7,7 @@ import PayrollWidget from "@/components/dashboard/PayrollWidget";
 import FinancialWidget from "@/components/dashboard/FinancialWidget";
 import CustomerWidget from "@/components/dashboard/CustomerWidget";
 import PredictionWidget from "@/components/dashboard/PredictionWidget";
+import ActionPanel from "@/components/dashboard/ActionPanel";
 import { 
   inventoryData, 
   employeeData, 
@@ -56,6 +57,8 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <DashboardHeader trends={trends} />
+      
+      <ActionPanel />
 
       <div className="grid grid-cols-1 gap-4 mt-8 md:grid-cols-2 lg:grid-cols-3">
         <InventoryWidget inventoryItems={inventoryData} />

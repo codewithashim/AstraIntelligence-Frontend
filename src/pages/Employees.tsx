@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { employeeData } from "@/data/mockData";
@@ -21,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, FileBarChart, UserPlus, Star, AlertCircle } from "lucide-react";
-import ActionButton from "@/components/dashboard/ActionButtons";
 import { 
   PieChart,
   Pie,
@@ -59,9 +59,6 @@ const Employees = () => {
     color: ["#9b87f5", "#7E69AB", "#E5DEFF", "#FFDEE2"][employeeData.indexOf(emp) % 4]
   }));
 
-  // Employee actions
-  const employeeActions = ["Add Employee", "Export Payroll"];
-
   return (
     <DashboardLayout>
       <div className="space-y-4">
@@ -73,8 +70,14 @@ const Employees = () => {
             </p>
           </div>
           <div className="space-x-2">
-            <ActionButton actionType="Add Employee" />
-            <ActionButton actionType="Export Payroll" />
+            <Button>
+              <UserPlus size={18} className="mr-2" />
+              Add Employee
+            </Button>
+            <Button variant="outline">
+              <FileBarChart size={18} className="mr-2" />
+              Export Payroll
+            </Button>
           </div>
         </div>
 

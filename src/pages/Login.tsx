@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { login as loginUser } from "@/redux/api/authApi";
+import { setAuthState } from "@/redux/slices/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,23 +37,44 @@ const Login = () => {
           password: data.password,
         })
       );
+
       if (loginUser.fulfilled.match(resultAction)) {
-        toast({
-          title: "Login successful",
-          description: "Welcome to Astra Nails Management System",
-        });
-        navigate("/");
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid credentials. Please try again.",
-          variant: "destructive",
-        });
+        const { payload } = resultAction;
+        
+        if (payload.success && payload.data) {
+          const { accessToken, user } = payload.data;
+          
+          // Store auth state in Redux and local storage
+          const authState = {
+            isAuthenticated: true,
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+              role: user.role,
+            },
+            token: accessToken,
+          };
+          
+          dispatch(setAuthState(authState));
+
+          toast({
+            title: "Login successful",
+            description: `Welcome back, ${user.name}!`,
+          });
+          
+          navigate("/");
+        } else {
+          throw new Error(payload.message || "Login failed");
+        }
+      } else if (loginUser.rejected.match(resultAction)) {
+        throw new Error(resultAction.error.message || "Login failed");
       }
     } catch (error) {
       toast({
         title: "Login failed",
-        description: "Invalid credentials. Please try again.",
+        description: error.message || "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }
