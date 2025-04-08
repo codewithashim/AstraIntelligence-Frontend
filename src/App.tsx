@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -17,13 +16,14 @@ import Customers from "./pages/Customers";
 import NotFound from "./pages/NotFound";
 import { ReduxProvider } from "./redux/redux-provider";
 
+// Create the query client outside of the component
 const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <React.StrictMode>
-      <ReduxProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <ReduxProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -31,7 +31,6 @@ const App = () => {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Index />
@@ -62,13 +61,15 @@ const App = () => {
                     <Customers />
                   </ProtectedRoute>
                 } />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
-        </QueryClientProvider>
-      </ReduxProvider>
+        </ReduxProvider>
+      </QueryClientProvider>
     </React.StrictMode>
   );
 };
+
 export default App;
