@@ -1,7 +1,4 @@
-
-import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,60 +10,68 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { useAppDispatch } from "@/hooks/reduxHooks";
+import { register as registerUser } from "@/redux/api/authApi";
 
 const Signup = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const { signup } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    
-    // Basic validation
-    if (!name || !email || !password || !confirmPassword) {
-      setError("Please fill all fields");
-      return;
+  const dispatch = useAppDispatch();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
     }
+  });
 
-    if (password !== confirmPassword) {
-      setError("Passwords don't match");
-      return;
-    }
-
-    setIsLoading(true);
-
+  const onSubmit = async (data) => {
     try {
-      await signup(name, email, password);
-      toast({
-        title: "Account created",
-        description: "Welcome to Astra Nails Management System",
-      });
-      navigate("/");
+
+      const resultAction = await dispatch(
+        registerUser({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          role: "user",
+          password: data.password,
+        })
+      );
+      if (registerUser.fulfilled.match(resultAction)) {
+        toast({
+          title: "Account created",
+          description: "Welcome to Astra Nails Management System",
+        });
+        navigate("/");
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to create account. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      setError("Failed to create account. Please try again.");
-    } finally {
-      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "Failed to create account. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100">
-      <div className="w-full max-w-md px-4">
+      <div className="w-full max-w-[40%] px-4">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-primary">Astra Nails</h1>
           <p className="text-muted-foreground mt-2">Management System</p>
         </div>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
@@ -75,13 +80,7 @@ const Signup = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-              
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <div className="relative">
@@ -89,16 +88,13 @@ const Signup = () => {
                   <Input
                     id="name"
                     placeholder="John Doe"
-                    type="text"
-                    autoCapitalize="words"
-                    autoCorrect="off"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    {...register("name", { required: "Name is required" })}
                     className="pl-10"
                   />
                 </div>
+                {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
@@ -107,16 +103,26 @@ const Signup = () => {
                     id="email"
                     placeholder="name@example.com"
                     type="email"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    autoCorrect="off"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    {...register("email", { required: "Email is required" })}
+                    className="pl-10"
+                  />
+                </div>
+                {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone (optional)</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    placeholder="123-456-7890"
+                    {...register("phone")}
                     className="pl-10"
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
@@ -124,14 +130,13 @@ const Signup = () => {
                   <Input
                     id="password"
                     type="password"
-                    autoComplete="new-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    {...register("password", { required: "Password is required" })}
                     className="pl-10"
                   />
                 </div>
+                {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
@@ -139,16 +144,22 @@ const Signup = () => {
                   <Input
                     id="confirmPassword"
                     type="password"
-                    autoComplete="new-password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    {...register("confirmPassword", {
+                      required: "Please confirm your password",
+                      validate: (val) => {
+                        if (watch('password') != val) {
+                          return "Your passwords do not match";
+                        }
+                      },
+                    })}
                     className="pl-10"
                   />
                 </div>
+                {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
               </div>
-              
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating Account..." : "Sign Up"}
+
+              <Button type="submit" className="w-full">
+                Sign Up
               </Button>
             </form>
           </CardContent>
