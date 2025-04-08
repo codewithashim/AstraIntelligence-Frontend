@@ -3,11 +3,10 @@ import React from "react";
 import ActionButton from "./ActionButtons";
 
 const ActionPanel: React.FC = () => {
-  // Define action buttons for each category
   const inventoryActions = ["Add Product", "Export"];
   const employeeActions = ["Add Employee", "Export Payroll"];
-  const financeActions = ["Export Report"];
-  const analyticsActions = ["Export Insights"];
+  const financeActions = ["Date RangeExport Report"];
+  const analyticsActions = ["Date RangeExport Insights"];
   const customerActions = ["Add Customer", "Send Promotions"];
 
   return (

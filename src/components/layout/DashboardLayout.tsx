@@ -41,8 +41,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  console.log("🚀 ~ user =========>:", user)
-
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: Package, label: "Inventory", path: "/inventory" },

@@ -80,7 +80,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ actionType }) => {
             setOpen(false);
           },
         };
-      case "Export Report":
+      case "Date RangeExport Report":
         return {
           icon: <Calendar className="mr-2 h-4 w-4" />,
           color: "bg-cyan-500 hover:bg-cyan-600",
@@ -94,7 +94,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ actionType }) => {
             setOpen(false);
           },
         };
-      case "Export Insights":
+      case "Date RangeExport Insights":
         return {
           icon: <Calendar className="mr-2 h-4 w-4" />,
           color: "bg-indigo-500 hover:bg-indigo-600",
